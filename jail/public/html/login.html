@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="app">
+    <head>
+    	<title>Hello</title>
+        <link rel="stylesheet" href="/css/style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.js" type="text/javascript"></script>
+    </head>
+    <body ng-controller="mainController">
+    	
+        <h1>Existing Users</h1>
+        <form ng-submit="login()">
+            <input type="text" ng-model="loginForm.username" placeholder="Username"/>
+            <input type="password" ng-model="loginForm.password" placeholder="Password"/>
+            <input type="submit"/>
+        </form>
+        <div class="space"></div>
+<!--         <h1>Register</h1>
+        <form ng-submit="signup()">
+            <input type="text" ng-model="signupForm.username" placeholder="Username"/>
+            <input type="text" ng-model="signupForm.role" placeholder="role"/>
+
+            <input type="password" ng-model="signupForm.password" placeholder="Password"/>
+            <input type="submit"/>
+        </form> -->
+
+        <div class="user-container">
+            <h1>Log in as:</h2>
+            <div class="jail-user" ng-click="logInAs(user)" ng-repeat="user in users">
+                <h2>{{user.name}}</h2>
+                <h3>{{user.role}}</h3>
+            </div>
+
+        </div>
+
+        <script src="/js/main.js"></script>
+
+    </body>
+</html>
