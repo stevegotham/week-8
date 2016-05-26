@@ -72,12 +72,12 @@ app.isAuthenticated = function(req, res, next){
       return next()
     }
     else {
-      res.sendFile('/html/forbidden.html', {root: './public'})
+      res.redirect('/naw-to-the-naw-naw-naw')
     }
 }
 app.isWarden = function(req, res, next) {
   if(req.user.role !== 'warden') {
-    res.sendFile('/html/forbidden.html', {root: './public'})
+    res.redirect('/naw-to-the-naw-naw-naw')
   }
   else {
     return next()
@@ -85,7 +85,7 @@ app.isWarden = function(req, res, next) {
 }
 app.isPrisoner = function(req, res, next) {
   if(req.user.role == 'prisoner') {
-    res.sendFile('/html/forbidden.html', {root: './public'})
+    res.redirect('/naw-to-the-naw-naw-naw')
   }
   else {
     return next()
@@ -93,10 +93,10 @@ app.isPrisoner = function(req, res, next) {
 }
 app.isEve = function(req, res, next) {
   if(req.user.role === 'visitor') {
-    res.sendFile('/html/forbidden.html', {root: './public'})
+    res.redirect('/naw-to-the-naw-naw-naw')
   }
   else if (req.user.role === 'prisoner' && req.user.username !== 'eve') {
-    res.sendFile('/html/forbidden.html', {root: './public'})
+    res.redirect('/naw-to-the-naw-naw-naw')
   }
   else {
     return next()
@@ -104,10 +104,10 @@ app.isEve = function(req, res, next) {
 }
 app.isMallory = function(req, res, next) {
   if(req.user.role === 'visitor') {
-    res.sendFile('/html/forbidden.html', {root: './public'})
+    res.redirect('/naw-to-the-naw-naw-naw')
   }
   else if (req.user.role === 'prisoner' && req.user.username !== 'mallory') {
-    res.sendFile('/html/forbidden.html', {root: './public'})
+    res.redirect('/naw-to-the-naw-naw-naw')
   }
   else {
     return next()
@@ -115,13 +115,14 @@ app.isMallory = function(req, res, next) {
 }
 app.isVisitor = function(req, res, next) {
   if(req.user.role === 'visitor') {
-    res.sendFile('/html/forbidden.html', {root: './public'})
+    res.redirect('/naw-to-the-naw-naw-naw')
   }
   else {
     return next()
   }
 }
 // end middleware
+
 // begin routes
 app.post('/signup', function(req, res){
     bcrypt.genSalt(11, function(error, salt){
@@ -147,18 +148,24 @@ app.post('/signup', function(req, res){
 app.post('/login', function(req, res, next){
     passport.authenticate('local', function(err, user, info) {
       if(err) { return next(err) }
-      if(!user) { return res.send({error: 'Please try again'}) }
+      if(!user) { return res.send({error: 'No such user found...'}) }
       req.login(user, function(err) {
         if(err) { return next(err) }
         return res.send({success: 'Success!'})
       })
     })(req, res, next)
 })
-
+app.delete('/api', function(req, res) {
+  User.findOneAndRemove({_id: req.body.id}, function(err, data) {
+    res.send({message: 'user deleted'})
+  } )
+})
 app.get('/', function(req, res){
     res.sendFile('/html/login.html', {root: './public'})
 })
+// prevent any unauthorized users from going beyond this point
 app.use(app.isAuthenticated)
+
 app.get('/api/me', function(req,res){
     res.send(req.user)
 })
@@ -183,6 +190,10 @@ app.get('/cell-e', app.isEve, function(req, res){
 app.get('/cell-m', app.isMallory, function(req, res){
     res.sendFile('/html/cell-m.html', {root: './public'})
 })
+app.get('/naw-to-the-naw-naw-naw', function(req, res) {
+    res.sendFile('/html/forbidden.html', {root: './public'})
+})
+
 // end routes
 
-app.listen(3000)
+app.listen(8080)
